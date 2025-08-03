@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { getPublicFeeds } from "@/apis/feedApi";
-import { getPhotosOfAll } from "@/apis/photoApi";
 import { useUserStore } from "@/stores/userStore";
+import { getFeedsByUserId } from "@/apis/accessRuleFeedApi";
+import { getPhotosOfAll } from "@/apis/photoApi";
 
 interface FeedWithPhoto {
   feed_id: string;
@@ -29,16 +29,37 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = useUserStore((s) => s.user);
+  const initialLoadComplete = useRef(false);
 
   useEffect(() => {
-    loadFeeds();
-  }, []);
+    console.log(
+      "useEffect running, user:",
+      user,
+      "initialLoadComplete:",
+      initialLoadComplete.current
+    );
 
-  const loadFeeds = async () => {
+    if (user === null && !initialLoadComplete.current) {
+      console.log("Skipping initial load because user is null");
+      initialLoadComplete.current = true;
+      return;
+    }
+
+    console.log(
+      "Loading feeds for user:",
+      user ? user.user_id : "null (all photos)"
+    );
+    loadFeeds(user ? user.user_id : null);
+  }, [user]);
+
+  const loadFeeds = async (userId: string | null) => {
+    console.log("loadFeeds called with userId:", userId);
     try {
       setLoading(true);
-      const data = await getPhotosOfAll();
-      console.log(data, error, error);
+      const data = userId
+        ? await getFeedsByUserId(userId)
+        : await getPhotosOfAll();
+      console.log("Loaded feed data:", data);
       setFeeds(data);
     } catch (err) {
       setError("피드를 불러오는데 실패했습니다.");
