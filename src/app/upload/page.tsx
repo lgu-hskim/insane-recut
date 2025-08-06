@@ -113,139 +113,141 @@ export default function UploadPage() {
   }
 
   return (
-    <div
-      className="container mx-auto p-4 max-w-6xl"
-      style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}
-    >
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          📤 사진 업로드
-        </h1>
-        <p className="text-gray-600">소중한 인생네컷을 공유해보세요</p>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-100 to-pink-100">
       <div
-        className="bg-white rounded-lg shadow-lg p-6"
-        style={{
-          backgroundColor: "white",
-          borderRadius: "0.5rem",
-          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-          padding: "1.5rem",
-        }}
+        className="container mx-auto p-4 max-w-6xl"
+        style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}
       >
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            📤 사진 업로드
+          </h1>
+          <p className="text-gray-600">소중한 인생네컷을 공유해보세요</p>
+        </div>
+
         <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          className="bg-white rounded-lg shadow-lg p-6 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "2rem",
+            backgroundColor: "white",
+            borderRadius: "0.5rem",
+            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+            padding: "1.5rem",
           }}
         >
-          {/* 왼쪽: 이미지 업로드 및 미리보기 영역 */}
-          <div className="lg:w-80">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              📸 이미지 업로드
-            </h2>
+          <div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "2rem",
+            }}
+          >
+            {/* 왼쪽: 이미지 업로드 및 미리보기 영역 */}
+            <div className="lg:w-80 ">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                📸 이미지 업로드
+              </h2>
 
-            {/* 이미지 업로드 버튼 */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                사진 선택
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-                required
-              />
-            </div>
-
-            {/* 이미지 미리보기 - 고정 크기 */}
-            <div className="w-52 h-80 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="미리보기"
-                  className="w-52 h-full object-contain rounded-lg"
-                />
-              ) : (
-                <div className="text-center text-gray-500">
-                  <div className="text-4xl mb-2">📷</div>
-                  <p>이미지를 선택하면 여기에 미리보기가 표시됩니다</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 오른쪽: 폼 영역 */}
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              📝 사진 정보
-            </h2>
-
-            <form onSubmit={handleSubmit}>
-              {error && (
-                <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                  {error}
-                </div>
-              )}
-
-              {/* 제목 */}
+              {/* 이미지 업로드 버튼 */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  제목
+                  사진 선택
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="사진 제목을 입력해주세요"
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                  required
+                />
+              </div>
+
+              {/* 이미지 미리보기 - 고정 크기 */}
+              <div className="w-52 h-80 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="미리보기"
+                    className="w-52 h-full object-contain rounded-lg"
+                  />
+                ) : (
+                  <div className="text-center text-gray-500">
+                    <div className="text-4xl mb-2">📷</div>
+                    <p>이미지를 선택하면 여기에 미리보기가 표시됩니다</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 오른쪽: 폼 영역 */}
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                📝 사진 정보
+              </h2>
+
+              <form onSubmit={handleSubmit}>
+                {error && (
+                  <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                    {error}
+                  </div>
+                )}
+
+                {/* 제목 */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    제목
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="사진 제목을 입력해주세요"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* 설명 */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    설명 (선택사항)
+                  </label>
+                  <textarea
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
+                    placeholder="사진에 대한 설명을 입력해주세요"
+                    rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
                   />
                 </div>
-              </div>
 
-              {/* 설명 */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  설명 (선택사항)
-                </label>
-                <textarea
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  placeholder="사진에 대한 설명을 입력해주세요"
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
+                {/* 공개 설정 */}
+                <div className="mb-6">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={isPublic}
+                      onChange={(e) => setIsPublic(e.target.checked)}
+                      className="mr-2"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      갤러리에 공개하기
+                    </span>
+                  </label>
+                </div>
 
-              {/* 공개 설정 */}
-              <div className="mb-6">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={isPublic}
-                    onChange={(e) => setIsPublic(e.target.checked)}
-                    className="mr-2"
-                  />
-                  <span className="text-sm font-medium text-gray-700">
-                    갤러리에 공개하기
-                  </span>
-                </label>
-              </div>
-
-              {/* 업로드 버튼 */}
-              <button
-                type="submit"
-                disabled={loading || !imageFile || !title.trim()}
-                className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                {loading ? "업로드 중..." : "📸 업로드하기"}
-              </button>
-            </form>
+                {/* 업로드 버튼 */}
+                <button
+                  type="submit"
+                  disabled={loading || !imageFile || !title.trim()}
+                  className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                >
+                  {loading ? "업로드 중..." : "📸 업로드하기"}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
