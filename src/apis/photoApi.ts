@@ -1,9 +1,9 @@
 import { supabase } from "@/lib/supabase";
-import { Photo, PhotoFeed } from "@/types/photo";
+import { PhotoFeed } from "@/types/photo";
 
 // 사진 업로드
 export async function uploadPhoto(
-  photoData: Omit<Photo, "photo_id" | "created_at">
+  photoData: Omit<PhotoFeed, "feed_id" | "created_at">
 ) {
   const { data, error } = await supabase
     .from("TB_PHOTO_FEED")
@@ -12,7 +12,7 @@ export async function uploadPhoto(
     .single();
 
   if (error) throw error;
-  return data as Photo;
+  return data as PhotoFeed;
 }
 
 // 모든 사진 조회
@@ -35,7 +35,7 @@ export async function getPhotosByUserId(userId: string) {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return data as Photo[];
+  return data as PhotoFeed[];
 }
 
 // 특정 사진 조회
@@ -43,27 +43,27 @@ export async function getPhotoById(photoId: string) {
   const { data, error } = await supabase
     .from("TB_PHOTO_FEED")
     .select("*")
-    .eq("photo_id", photoId)
+    .eq("feed_id", photoId)
     .single();
 
   if (error) throw error;
-  return data as Photo;
+  return data as PhotoFeed;
 }
 
 // 사진 정보 업데이트
 export async function updatePhoto(
   photoId: string,
-  updates: Partial<Omit<Photo, "photo_id" | "created_at">>
+  updates: Partial<Omit<PhotoFeed, "feed_id" | "created_at">>
 ) {
   const { data, error } = await supabase
     .from("TB_PHOTO_FEED")
     .update(updates)
-    .eq("photo_id", photoId)
+    .eq("feed_id", photoId)
     .select()
     .single();
 
   if (error) throw error;
-  return data as Photo;
+  return data as PhotoFeed;
 }
 
 // 사진 삭제
@@ -71,7 +71,7 @@ export async function deletePhoto(photoId: string) {
   const { error } = await supabase
     .from("TB_PHOTO_FEED")
     .delete()
-    .eq("photo_id", photoId);
+    .eq("feed_id", photoId);
 
   if (error) throw error;
 }

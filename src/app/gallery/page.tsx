@@ -7,24 +7,7 @@ import { getPhotosOfAll } from "@/apis/photoApi";
 import { searchCommentsByText } from "@/apis/commentApi";
 import { useUserStore } from "@/stores/userStore";
 import SearchBar from "@/components/SearchBar";
-
-interface FeedWithPhoto {
-  feed_id: string;
-  // photo_id: string;
-  user_id: string;
-  rule_id: string;
-  summary: string;
-  created_at: string;
-  image_url: string;
-  //TB_PHOTO: {
-  //  photo_id: string;
-  //  user_id: string;
-  //  image_url: string;
-  //  image_title: string;
-  //  taken_at: string;
-  //  created_at: string;
-  //};
-}
+import { PhotoFeed } from "@/types/photo";
 
 interface SearchResult {
   type: 'feed' | 'comment';
@@ -32,7 +15,7 @@ interface SearchResult {
 }
 
 export default function GalleryPage() {
-  const [feeds, setFeeds] = useState<FeedWithPhoto[]>([]);
+  const [feeds, setFeeds] = useState<PhotoFeed[]>([]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -265,7 +248,7 @@ export default function GalleryPage() {
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">
-                    {feed.summary}
+                    {feed.title}
                   </h3>
                   <p className="text-sm text-gray-600 mb-3">{feed.summary}</p>
                   <div className="flex justify-between items-center text-xs text-gray-500">
