@@ -2,26 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getPublicFeeds, searchFeedsBySummary } from "@/apis/feedApi";
+import { getPublicFeeds } from "@/apis/feedApi";
 import { getPhotosOfAll } from "@/apis/photoApi";
-import { searchCommentsByText } from "@/apis/commentApi";
 import { useUserStore } from "@/stores/userStore";
-import SearchBar from "@/components/SearchBar";
+import { useSearchStore } from "@/stores/searchStore";
 import { PhotoFeed } from "@/types/photo";
-
-interface SearchResult {
-  type: 'feed' | 'comment';
-  data: any;
-}
 
 export default function GalleryPage() {
   const [feeds, setFeeds] = useState<PhotoFeed[]>([]);
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
   const user = useUserStore((s) => s.user);
+  const { searchResults, clearSearch } = useSearchStore();
 
   useEffect(() => {
     loadFeeds();
@@ -39,48 +31,6 @@ export default function GalleryPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSearch = async (searchTerm: string, searchType: 'feed' | 'comment') => {
-    if (!searchTerm.trim()) {
-      setIsSearching(false);
-      setSearchResults([]);
-      return;
-    }
-
-    try {
-      setSearchLoading(true);
-      setIsSearching(true);
-      setError(null);
-
-      console.log('Searching for:', searchTerm, 'Type:', searchType);
-
-      if (searchType === 'feed') {
-        console.log('Calling searchFeedsBySummary...');
-        const feedResults = await searchFeedsBySummary(searchTerm);
-        console.log('Feed search results:', feedResults);
-        setSearchResults([{ type: 'feed', data: feedResults }]);
-      } else {
-        console.log('Calling searchCommentsByText...');
-        const commentResults = await searchCommentsByText(searchTerm);
-        console.log('Comment search results:', commentResults);
-        setSearchResults([{ type: 'comment', data: commentResults }]);
-      }
-    } catch (err) {
-      console.error("Detailed search error:", err);
-      console.error("Error type:", typeof err);
-      console.error("Error message:", err instanceof Error ? err.message : 'Unknown error');
-      setError("검색 중 오류가 발생했습니다.");
-      console.error("Error searching:", err);
-    } finally {
-      setSearchLoading(false);
-    }
-  };
-
-  const clearSearch = () => {
-    setIsSearching(false);
-    setSearchResults([]);
-    setError(null);
   };
 
   if (loading) {
@@ -118,93 +68,98 @@ export default function GalleryPage() {
         <p className="text-gray-600">모든 사용자들의 인생네컷을 감상해보세요</p>
       </div>
 
-      {/* 검색바 */}
-      <SearchBar onSearch={handleSearch} isLoading={searchLoading} />
-
       {/* 검색 결과 또는 전체 피드 표시 */}
-      {isSearching ? (
+      {searchResults ? (
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">검색 결과</h2>
             <button
               onClick={clearSearch}
-              className="text-purple-500 hover:text-purple-600 font-medium"
+              className="text-orange-500 hover:text-orange-600 font-medium"
             >
               전체 보기
             </button>
           </div>
 
-          {searchResults.map((result, index) => (
-            <div key={index}>
-              {result.type === 'feed' ? (
-                <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-4 justify-center">
-                  {result.data.map((feed: PhotoFeed) => (
-                    <div
-                      key={feed.feed_id}
-                      className="w-[200px] aspect-[2/7] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                    >
-                      <div className="aspect-[2/6] bg-gray-200 flex items-center justify-center">
+          {/* 피드 검색 결과 */}
+          {searchResults.feeds && searchResults.feeds.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">📸 피드 검색 결과</h3>
+              <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-4 justify-center">
+                {searchResults.feeds.map((feed: PhotoFeed) => (
+                  <div
+                    key={feed.feed_id}
+                    className="w-[200px] aspect-[2/7] bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                  >
+                    <div className="aspect-[2/6] bg-gray-200 flex items-center justify-center">
+                      <img
+                        src={feed.image_url}
+                        alt={feed.summary}
+                        className="w-52 h-full object-contain rounded-lg"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-gray-800 mb-2">
+                        {feed.title || feed.summary}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3">{feed.summary}</p>
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>{new Date(feed.created_at).toLocaleDateString()}</span>
+                        <Link
+                          href={`/comment/${feed.feed_id}`}
+                          className="text-blue-500 hover:text-blue-600 font-medium"
+                        >
+                          댓글 보기
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 댓글 검색 결과 */}
+          {searchResults.comments && searchResults.comments.length > 0 && (
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">💬 댓글 검색 결과</h3>
+              <div className="space-y-4">
+                {searchResults.comments.map((comment: any) => (
+                  <div key={comment.comment_id} className="bg-white rounded-lg shadow-md p-4">
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0">
                         <img
-                          src={feed.image_url}
-                          alt={feed.summary}
-                          className="w-52 h-full object-contain rounded-lg"
+                          src={comment.TB_PHOTO_FEED?.image_url}
+                          alt="피드 이미지"
+                          className="w-16 h-16 object-cover rounded-lg"
                         />
                       </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                          {feed.summary}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-3">{feed.summary}</p>
-                        <div className="flex justify-between items-center text-xs text-gray-500">
-                          <span>{new Date(feed.created_at).toLocaleDateString()}</span>
+                      <div className="flex-1">
+                        <p className="text-gray-800 mb-2">{comment.comment}</p>
+                        <div className="text-sm text-gray-500">
+                          <span>작성자: {comment.TB_USER?.nickname}</span>
+                          <span className="mx-2">•</span>
+                          <span>{new Date(comment.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div className="mt-2">
                           <Link
-                            href={`/comment/${feed.feed_id}`}
-                            className="text-blue-500 hover:text-blue-600 font-medium"
+                            href={`/comment/${comment.feed_id}`}
+                            className="text-blue-500 hover:text-blue-600 text-sm font-medium"
                           >
-                            댓글 보기
+                            전체 댓글 보기
                           </Link>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {result.data.map((comment: any) => (
-                    <div key={comment.comment_id} className="bg-white rounded-lg shadow-md p-4">
-                      <div className="flex items-start space-x-4">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={comment.TB_PHOTO_FEED?.image_url}
-                            alt="피드 이미지"
-                            className="w-16 h-16 object-cover rounded-lg"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-800 mb-2">{comment.comment}</p>
-                          <div className="text-sm text-gray-500">
-                            <span>작성자: {comment.TB_USER?.nickname}</span>
-                            <span className="mx-2">•</span>
-                            <span>{new Date(comment.created_at).toLocaleDateString()}</span>
-                          </div>
-                          <div className="mt-2">
-                            <Link
-                              href={`/comment/${comment.feed_id}`}
-                              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
-                            >
-                              전체 댓글 보기
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          )}
 
-          {searchResults.length === 0 && !searchLoading && (
+          {/* 검색 결과가 없는 경우 */}
+          {((!searchResults.feeds || searchResults.feeds.length === 0) && 
+            (!searchResults.comments || searchResults.comments.length === 0)) && (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🔍</div>
               <h2 className="text-2xl font-semibold text-gray-700 mb-2">
@@ -248,7 +203,7 @@ export default function GalleryPage() {
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">
-                    {feed.title}
+                    {feed.title || feed.summary}
                   </h3>
                   <p className="text-sm text-gray-600 mb-3">{feed.summary}</p>
                   <div className="flex justify-between items-center text-xs text-gray-500">

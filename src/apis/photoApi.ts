@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { Photo, PhotoFeed } from "@/types/photo";
+import { PhotoFeed } from "@/types/photo";
 
 // 사진 업로드
 export async function uploadPhoto(
