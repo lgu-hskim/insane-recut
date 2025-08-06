@@ -6,8 +6,8 @@ import { getPublicFeeds, searchFeedsBySummary } from "@/apis/feedApi";
 import { getPhotosOfAll } from "@/apis/photoApi";
 import { searchCommentsByText } from "@/apis/commentApi";
 import { useUserStore } from "@/stores/userStore";
-import { PhotoFeed } from "@/types/photo";
 import SearchBar from "@/components/SearchBar";
+import { PhotoFeed } from "@/types/photo";
 
 interface SearchResult {
   type: 'feed' | 'comment';

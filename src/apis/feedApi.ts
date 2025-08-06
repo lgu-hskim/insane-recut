@@ -82,7 +82,6 @@ export async function deleteFeed(feedId: string) {
     .from("TB_PHOTO_FEED")
     .delete()
     .eq("feed_id", feedId);
-
   if (error) throw error
 }
 
