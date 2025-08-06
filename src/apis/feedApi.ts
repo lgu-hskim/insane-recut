@@ -83,5 +83,24 @@ export async function deleteFeed(feedId: string) {
     .delete()
     .eq("feed_id", feedId);
 
-  if (error) throw error;
+  if (error) throw error
 }
+
+// 피드 summary 검색
+export async function searchFeedsBySummary(searchTerm: string) {
+  console.log('Searching feeds with term:', searchTerm);
+  
+  const { data, error } = await supabase
+    .from('TB_PHOTO_FEED')
+    .select('*')
+    .ilike('summary', `%${searchTerm}%`)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Feed search error:', error);
+    throw error;
+  }
+  
+  console.log('Feed search results:', data);
+  return data
+} 

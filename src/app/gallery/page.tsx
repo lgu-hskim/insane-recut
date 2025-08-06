@@ -2,15 +2,24 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getPublicFeeds } from "@/apis/feedApi";
+import { getPublicFeeds, searchFeedsBySummary } from "@/apis/feedApi";
 import { getPhotosOfAll } from "@/apis/photoApi";
+import { searchCommentsByText } from "@/apis/commentApi";
 import { useUserStore } from "@/stores/userStore";
 import { PhotoFeed } from "@/types/photo";
 
+interface SearchResult {
+  type: 'feed' | 'comment';
+  data: any;
+}
+
 export default function GalleryPage() {
   const [feeds, setFeeds] = useState<PhotoFeed[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const user = useUserStore((s) => s.user);
 
   useEffect(() => {
@@ -22,13 +31,55 @@ export default function GalleryPage() {
       setLoading(true);
       const data = await getPhotosOfAll();
       console.log(data, error, error);
-      setFeeds(data);
+      setFeeds(data as PhotoFeed[]);
     } catch (err) {
       setError("피드를 불러오는데 실패했습니다.");
       console.error("Error loading feeds:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = async (searchTerm: string, searchType: 'feed' | 'comment') => {
+    if (!searchTerm.trim()) {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      setSearchLoading(true);
+      setIsSearching(true);
+      setError(null);
+
+      console.log('Searching for:', searchTerm, 'Type:', searchType);
+
+      if (searchType === 'feed') {
+        console.log('Calling searchFeedsBySummary...');
+        const feedResults = await searchFeedsBySummary(searchTerm);
+        console.log('Feed search results:', feedResults);
+        setSearchResults([{ type: 'feed', data: feedResults }]);
+      } else {
+        console.log('Calling searchCommentsByText...');
+        const commentResults = await searchCommentsByText(searchTerm);
+        console.log('Comment search results:', commentResults);
+        setSearchResults([{ type: 'comment', data: commentResults }]);
+      }
+    } catch (err) {
+      console.error("Detailed search error:", err);
+      console.error("Error type:", typeof err);
+      console.error("Error message:", err instanceof Error ? err.message : 'Unknown error');
+      setError("검색 중 오류가 발생했습니다.");
+      console.error("Error searching:", err);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const clearSearch = () => {
+    setIsSearching(false);
+    setSearchResults([]);
+    setError(null);
   };
 
   if (loading) {

@@ -28,25 +28,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Quick Actions */}
-      <div className="bg-gray-50 rounded-lg p-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">지금 바로 시작해보세요!</h2>
-        <div className="grid md:grid-cols-2 gap-4 max-w-md mx-auto">
-          <Link 
-            href="/upload"
-            className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-4 rounded-lg font-semibold transition-colors"
-          >
-            📤 사진 업로드
-          </Link>
-          <Link 
-            href="/gallery"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-4 rounded-lg font-semibold transition-colors"
-          >
-            📷 갤러리 둘러보기
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }
