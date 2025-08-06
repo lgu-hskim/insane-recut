@@ -57,7 +57,8 @@ export default function UploadPage() {
       const photoData = {
         user_id: user.user_id,
         rule_id: "60d4856d-36ae-4fca-93f8-64717508a1a2", // rule id 관련 수정되면 넣기기
-        summary: summary || title,
+        title: title,
+        summary: summary,
         image_url: imageUrl,
         //  taken_at: new Date().toISOString(),
       };

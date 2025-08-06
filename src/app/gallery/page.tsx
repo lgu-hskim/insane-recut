@@ -5,27 +5,10 @@ import Link from "next/link";
 import { getPublicFeeds } from "@/apis/feedApi";
 import { getPhotosOfAll } from "@/apis/photoApi";
 import { useUserStore } from "@/stores/userStore";
-
-interface FeedWithPhoto {
-  feed_id: string;
-  // photo_id: string;
-  user_id: string;
-  rule_id: string;
-  summary: string;
-  created_at: string;
-  image_url: string;
-  //TB_PHOTO: {
-  //  photo_id: string;
-  //  user_id: string;
-  //  image_url: string;
-  //  image_title: string;
-  //  taken_at: string;
-  //  created_at: string;
-  //};
-}
+import { PhotoFeed } from "@/types/photo";
 
 export default function GalleryPage() {
-  const [feeds, setFeeds] = useState<FeedWithPhoto[]>([]);
+  const [feeds, setFeeds] = useState<PhotoFeed[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = useUserStore((s) => s.user);
@@ -115,7 +98,7 @@ export default function GalleryPage() {
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-gray-800 mb-2">
-                  {feed.image_title}
+                  {feed.title}
                 </h3>
                 <p className="text-sm text-gray-600 mb-3">{feed.summary}</p>
                 <div className="flex justify-between items-center text-xs text-gray-500">
