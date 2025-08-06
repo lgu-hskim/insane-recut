@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "tailwindcss";
 
 /* 모든 링크의 밑줄과 기본 스타일 제거 */
 a {
