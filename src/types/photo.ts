@@ -1,17 +1,9 @@
-export interface Photo {
-  photo_id: string;
-  user_id: string;
-  image_url: string;
-  image_title: string;
-  taken_at: string;
-  created_at: string;
-}
-
 export interface PhotoFeed {
   feed_id: string;
   user_id: string;
   rule_id: string;
   summary: string;
+  title?: string; // nullable title field
   image_url: string;
   created_at: string;
 }
@@ -33,9 +25,9 @@ export interface AccessRule {
 }
 
 export interface PhotoState {
-  photos: Photo[];
-  setPhotos: (photos: Photo[]) => void;
-  addPhoto: (photo: Photo) => void;
+  photos: PhotoFeed[];
+  setPhotos: (photos: PhotoFeed[]) => void;
+  addPhoto: (photo: PhotoFeed) => void;
   removePhoto: (photoId: string) => void;
   clearPhotos: () => void;
 }
