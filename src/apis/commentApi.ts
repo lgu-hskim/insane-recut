@@ -56,3 +56,22 @@ export async function deleteComment(commentId: string) {
 
   if (error) throw error;
 }
+
+// 댓글 검색
+export async function searchCommentsByText(searchTerm: string) {
+  const { data, error } = await supabase
+    .from('TB_COMMENT')
+    .select(`
+      *,
+      TB_USER (nickname),
+      TB_PHOTO_FEED (image_url, summary)
+    `)
+    .ilike('comment', `%${searchTerm}%`)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Comment search error:', error);
+    throw error;
+  }
+  return data
+}

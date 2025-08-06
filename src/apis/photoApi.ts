@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { Photo } from "@/types/photo";
+import { Photo, PhotoFeed } from "@/types/photo";
 
 // 사진 업로드
 export async function uploadPhoto(
@@ -23,7 +23,7 @@ export async function getPhotosOfAll() {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return data as Photo[];
+  return data as PhotoFeed[];
 }
 
 // 사용자의 모든 사진 조회
