@@ -82,7 +82,7 @@ export default function UploadPage() {
 
       // 성공시 갤러리로 이동
       router.push("/gallery");
-    } catch (err) {
+    } catch (err: any) {
       setError("업로드에 실패했습니다. 다시 시도해주세요.");
       console.error("Upload error:", err, err?.message, err?.stack);
     } finally {

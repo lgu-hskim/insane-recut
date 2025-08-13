@@ -17,7 +17,7 @@ export async function createComment(
 }
 
 // 특정 피드의 댓글들 조회
-export async function getCommentsByFeedId(feedId: UUID) {
+export async function getCommentsByFeedId(feedId: string) {
   const { data, error } = await supabase
     .from("TB_COMMENT")
     .select(

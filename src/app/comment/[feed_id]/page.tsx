@@ -9,14 +9,16 @@ import { getFeedById } from "@/apis/feedApi";
 
 export default function CommentListPage() {
   const { feed_id } = useParams();
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const user = useUserStore((s) => s.user);
   const [newComment, setNewComment] = useState("");
-  const [feedData, setFeedData] = useState(null);
+  const [feedData, setFeedData] = useState<any>(null);
 
   useEffect(() => {
     async function fetchComments() {
+      if (!feed_id || typeof feed_id !== 'string') return;
+      
       setLoading(true);
 
       // 피드 정보 가져오기
@@ -28,12 +30,12 @@ export default function CommentListPage() {
       setComments(commentData);
       setLoading(false);
     }
-    if (feed_id) fetchComments();
+    if (feed_id && typeof feed_id === 'string') fetchComments();
   }, [feed_id]);
 
   // 댓글 추가 핸들러
   const handleAddComment = async () => {
-    if (!user || !newComment.trim()) return;
+    if (!user || !newComment.trim() || !feed_id || typeof feed_id !== 'string') return;
     try {
       await createComment({
         user_id: user.user_id,
@@ -44,7 +46,7 @@ export default function CommentListPage() {
       // 댓글 목록 새로고침
       const commentData = await getCommentsByFeedId(feed_id);
       setComments(commentData);
-    } catch (e) {
+    } catch (e: any) {
       alert("댓글 추가 실패: " + (e.message || e));
     }
   };

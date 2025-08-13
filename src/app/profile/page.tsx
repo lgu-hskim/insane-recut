@@ -1,10 +1,17 @@
 "use client";
 
 import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "next/navigation";
 
 export default function UserInfo() {
   const user = useUserStore((s) => s.user);
-  const logout = useUserStore((s) => s.logout);
+  const clearUser = useUserStore((s) => s.clearUser);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    clearUser();
+    router.push('/');
+  };
 
   return (
     <div className="min-h-[350px] py-16 px-2 bg-gradient-to-br from-blue-200 via-purple-100 to-pink-100 flex items-center justify-center">
@@ -25,7 +32,7 @@ export default function UserInfo() {
         </div>
         {user ? (
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="mt-8 px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold text-lg transition-colors"
           >
             로그아웃
